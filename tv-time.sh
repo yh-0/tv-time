@@ -1,15 +1,20 @@
-#!bin/bash
+#!/bin/bash
 
-mapfile -t shows
-declare -A show_lengths
+rmnl ()
+{
+    tmp1=$(echo "$1" | xxd -p)
+    tmp2=${tmp1::-4}
+    echo "$tmp2" | xxd -r -p
+}
 
-for show in "${shows[@]}"
+fun ()
+{
+    length="$(./"$GET_TVSHOW_TOTAL_LENGTH_BIN" "$1")"
+    echo "$1"
+    rmnl "$length"
+}
+
+while read -r line || [[ -n "$line" ]]
 do
-    show_lengths[$show]=$(./"$GET_TVSHOW_TOTAL_LENGTH_BIN" "$show") 
-done
-
-for key in "${!show_lengths[@]}"
-do 
-    echo "$key"
-    echo "${show_lengths[$key]}"
+    fun "$line" &
 done

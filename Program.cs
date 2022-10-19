@@ -6,14 +6,14 @@ namespace GetTvShowTotalLength
 {
     internal class Program
     {
-        public static string buildUrl(string urlParam)
+        public static string buildUrl(string[] urlParams)
         {
             const string url = "https://api.tvmaze.com/singlesearch/shows?q=";
             StringBuilder stringBuilder = new StringBuilder(url);
 
             try
             {
-                stringBuilder.Append(urlParam);
+                stringBuilder.Append(urlParams[0]);
                 stringBuilder.Append("&embed=episodes");
                 return stringBuilder.ToString();
             }
@@ -74,12 +74,12 @@ namespace GetTvShowTotalLength
 
         static void Main(string[] args)
         {
-            var url = buildUrl(args[0]);
+            var url = buildUrl(args);
             var response = collectData(url);
             var resultRoot = deserializeData(response);
             var totalShowLength = calculateTotalShowLength(resultRoot);
 
-            Console.WriteLine(totalShowLength);
+            Console.WriteLine(totalShowLength.ToString().Replace("\n", "").Replace("\r", ""));
 
             Environment.Exit(0);
         }
