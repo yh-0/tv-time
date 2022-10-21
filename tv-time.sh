@@ -1,20 +1,20 @@
 #!/bin/bash
 
-rmnl ()
-{
-    tmp1=$(echo "$1" | xxd -p)
-    tmp2=${tmp1::-4}
-    echo "$tmp2" | xxd -r -p
-}
-
-fun ()
-{
-    length="$(./"$GET_TVSHOW_TOTAL_LENGTH_BIN" "$1")"
-    echo "$1"
-    rmnl "$length"
-}
+declare -a shows
 
 while read -r line || [[ -n "$line" ]]
 do
-    fun "$line" &
+    length="$(./"$GET_TVSHOW_TOTAL_LENGTH_BIN" "$line")"
+
+    tmp1=$(echo "$length" | xxd -p)
+
+    tmp2=${tmp1::-4}
+    
+    var="$tmp2$line"
+
+    shows+=("$var")
 done
+
+echo "${#shows[@]}"
+
+printf '%s\n' "${shows[@]}"
